@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use correct character set -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Make the application on mobile take up the full browser screen and disable user scaling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>3D Globe with GeoJSON</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.83/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.83/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <style>
+        @import url(../templates/bucket.css);
+        #cesiumContainer {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id="cesiumContainer"></div>
+    <script>
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNDI2MWI0My0xNWYwLTRmZTYtODBkMC1mZWVhMTBiMGI1NGMiLCJpZCI6MTQ4NTI4LCJpYXQiOjE2ODc0NDA2NzN9.QqSZwaXC8xUqNxnfqmHMqfOtVS_huDYG90mqsjz9In8'; 
+
+        var viewer = new Cesium.Viewer('cesiumContainer');
+
+        // Load GeoJSON
+        viewer.dataSources.add(Cesium.GeoJsonDataSource.load('dataframe.geojson', {
+            stroke: Cesium.Color.HOTPINK,
+            fill: Cesium.Color.PINK.withAlpha(0.5),
+            strokeWidth: 3
+        }));
+    </script>
+</body>
+</html>

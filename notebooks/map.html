@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<div id="map" style="height: 600px;"></div>
+
+<script>
+    // Initialize the map
+    var map = L.map('map').setView([10, 0], 2);
+
+    // Add a base map layer (tiles)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
+
+    // Add GeoJSON data to the map
+    $.getJSON("dataframe.geojson", function(data) {
+        L.geoJson(data).addTo(map);
+    });
+</script>
+
+</body>
+</html>
