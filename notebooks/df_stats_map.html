@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cesium Map</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.84/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.84/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <style>
+        /* Custom CSS to layout the page */
+        #wrapper {
+            display: flex;
+            height: 100vh;
+        }
+        #intro {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            font-family: Arial, sans-serif;
+        }
+        #cesiumContainer {
+            flex: 3;
+            height: 100vh;
+        }
+        .cesium-viewer-bottom {
+            display: none;
+        }
+        h2 {
+            margin: 0;
+            padding-bottom: 10px;
+            font-size: 22px;
+            border-bottom: 1px solid #ddd;
+        }
+        p {
+            font-size: 14px;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="intro">
+            <!-- Project introduction -->
+            <h2>TATE GALLERY: A Metadata Exploration</h2>
+            <p>Welcome to an immersive and interactive visualization project that brings the art world closer to you. This project dives into the metadata of approximately 3,500 artists whose art has graced the esteemed ARTIST ROOMS - a shared collection between Tate and the National Galleries of Scotland (1947 - 2004).</p>
+            
+            <p>As you explore the world map, you’ll encounter clusters representing artists from various regions. Each point on the map encapsulates rich information regarding the geolocation and the gender diversity among artists. This enables us to better understand the geographic dispersion and gender representation within the collections.</p>
+        
+            <p>Go ahead, explore, and immerse yourself in the world of art!</p>
+
+            <p>Thanks to Tom Russell for mentoring me on this project.</p>              
+        </div>
+        <div id="cesiumContainer"></div>
+    </div>
+
+    <script>
+        // Initialize Cesium Viewer with Bing Maps Roads as the default base layer
+        var viewer = new Cesium.Viewer('cesiumContainer', {
+            baseLayerPicker: false,
+            imageryProvider: new Cesium.BingMapsImageryProvider({
+                url: 'https://dev.virtualearth.net',
+                key: 'As9IXm0bm2lg6X9z4pxxViZoOPs8En5lRdrt0DitF-HboC1PNyhU5vqjhIGLEQJa', //Bing Maps API key
+                mapStyle: Cesium.BingMapsStyle.ROAD // This sets the style to Bing Maps Roads
+            }),
+            shouldAnimate: false 
+        });
+
+// Load GeoJSON data
+var geoJsonDataSource = new Cesium.GeoJsonDataSource();
+geoJsonDataSource.load('df_stats_new.geojson').then(function(dataSource) {
+    // Get the array of entities
+    var entities = dataSource.entities.values;
+
+    // Custom function to get color based on frequency
+    function getColorFromFrequency(frequency) {
+        if (frequency >= 300) {
+            return Cesium.Color.RED; 
+        } else if (frequency >= 50) {
+            return Cesium.Color.ORANGE; 
+        } else if (frequency >= 20) {
+            return Cesium.Color.YELLOW; 
+        } else if (frequency >= 0) {
+            return Cesium.Color.GREEN; 
+        } else {
+            return Cesium.Color.BLUE; 
+        }
+    }
+
+    // Loop through each entity
+    for (var i = 0; i < entities.length; i++) {
+        var entity = entities[i];
+
+        var frequency = entity.properties.frequency; 
+
+        // Set the point properties
+        entity.point = new Cesium.PointGraphics({
+            color : getColorFromFrequency(frequency),
+            pixelSize : 10
+        });
+    }
+});
+viewer.dataSources.add(geoJsonDataSource);
+
+// Zoom to the data source
+viewer.zoomTo(geoJsonDataSource);
+
+
+    </script>
+</body>
+</html>
